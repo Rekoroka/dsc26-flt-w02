@@ -29,11 +29,58 @@ final class StockAlert {
   ///
   /// TODO(W2): validate every field as the README says. Any invalid input
   /// throws a FormatException, never a TypeError.
+
+  /// Reads one alert from the head-office JSON feed.
   factory StockAlert.fromJson(Map<String, Object?> json) {
-    throw UnimplementedError('StockAlert.fromJson');
+    String requiredString(String key) {
+      final value = json[key];
+      if (value is! String || value.trim().isEmpty) {
+        throw FormatException('Invalid field: $key');
+      }
+      return value;
+    }
+
+    final id = requiredString('id');
+    final medicineNameEn = requiredString('medicineNameEn');
+    final medicineNameAr = requiredString('medicineNameAr');
+    final branchCode = requiredString('branchCode');
+
+    final severityValue = json['severity'];
+    if (severityValue is! String) {
+      throw const FormatException('Invalid severity');
+    }
+
+    final severityName = severityValue.toLowerCase();
+    final matchingSeverities = Severity.values
+        .where((value) => value.name == severityName)
+        .toList();
+
+    if (matchingSeverities.isEmpty) {
+      throw FormatException('Unknown severity: $severityValue');
+    }
+
+    final daysValue = json['daysOfCover'];
+    if (daysValue is! num || !daysValue.isFinite || daysValue < 0) {
+      throw const FormatException('Invalid daysOfCover');
+    }
+
+    final acknowledgedValue = json['acknowledged'];
+    if (acknowledgedValue != null && acknowledgedValue is! bool) {
+      throw const FormatException('Invalid acknowledged');
+    }
+
+    return StockAlert(
+      id: id,
+      medicineNameEn: medicineNameEn,
+      medicineNameAr: medicineNameAr,
+      severity: matchingSeverities.first,
+      daysOfCover: daysValue.toDouble(),
+      branchCode: branchCode,
+      acknowledged: acknowledgedValue as bool? ?? false,
+    );
   }
 
-  /// TODO(W2): return a new StockAlert with the given fields replaced.
+  /// Returns a new alert with the given fields replaced.
   StockAlert copyWith({
     String? id,
     String? medicineNameEn,
@@ -43,16 +90,40 @@ final class StockAlert {
     String? branchCode,
     bool? acknowledged,
   }) {
-    throw UnimplementedError('StockAlert.copyWith');
+    return StockAlert(
+      id: id ?? this.id,
+      medicineNameEn: medicineNameEn ?? this.medicineNameEn,
+      medicineNameAr: medicineNameAr ?? this.medicineNameAr,
+      severity: severity ?? this.severity,
+      daysOfCover: daysOfCover ?? this.daysOfCover,
+      branchCode: branchCode ?? this.branchCode,
+      acknowledged: acknowledged ?? this.acknowledged,
+    );
   }
 
-  /// TODO(W2): value equality over all seven fields.
+  /// Value equality over all seven fields.
   @override
   bool operator ==(Object other) {
-    throw UnimplementedError('StockAlert.==');
+    return identical(this, other) ||
+        other is StockAlert &&
+            id == other.id &&
+            medicineNameEn == other.medicineNameEn &&
+            medicineNameAr == other.medicineNameAr &&
+            severity == other.severity &&
+            daysOfCover == other.daysOfCover &&
+            branchCode == other.branchCode &&
+            acknowledged == other.acknowledged;
   }
 
-  /// TODO(W2): consistent with ==.
+  /// Consistent with ==.
   @override
-  int get hashCode => throw UnimplementedError('StockAlert.hashCode');
+  int get hashCode => Object.hash(
+    id,
+    medicineNameEn,
+    medicineNameAr,
+    severity,
+    daysOfCover,
+    branchCode,
+    acknowledged,
+  );
 }

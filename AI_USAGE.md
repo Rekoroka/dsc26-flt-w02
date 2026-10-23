@@ -1,23 +1,21 @@
 # AI usage: dsc26-flt-w02
 
-AI tools are allowed in this task. Fill in every section in your own words. Short is fine; honest is required. This file is read by your Track Mentor, not by the grader.
-
 ## 1. Tools I used
 
-<!-- e.g. "Claude in the browser for the model, GitHub Copilot in VS Code for the widget code". Write "none" if you used none. -->
+- ChatGPT to understand the task, write and fix code, and solve test problems.
+- Flutter CLI to run tests and check my code.
+- Dart and Flutter documentation to learn more about the code.
 
 ## 2. The two or three most useful prompts
 
-<!-- Paraphrasing is fine. Say what you were trying to get. -->
-
-1.
-2.
-3.
+1. Help me write `StockAlert` methods to read data, copy an alert, and compare alerts.
+2. Help me add search, filters, sorting, and acknowledge actions to `AlertsViewModel`.
+3. Help me fix the app so it shows the alerts screen and passes the tests.
 
 ## 3. One thing the AI got wrong or left out, and how I found it
 
-<!-- What was wrong, and how you noticed: a public test, the README, the Flutter docs, running the app... -->
+At first, the app did not show the alerts screen. The tests failed because they could not find the alerts or the critical filter. I checked the problem, fixed the app setup, and ran the tests again.
 
 ## 4. Why `visibleAlerts` lives in the view model and not in the screen
 
-<!-- Two sentences, your own words, no AI. -->
+The view model searches, filters, and sorts the alerts. The screen only shows the alerts and lets the user interact with them. This makes the code easier to test and understand.
